@@ -10,15 +10,15 @@ Point::Point(GLfloat _x,GLfloat _y,GLfloat _z){
 
 Point::~Point(){}
 
-const GLfloat& Point::getX() const {
+GLfloat Point::getX() const {
     return x;
 }
 
-const GLfloat& Point::getY() const {
+GLfloat Point::getY() const {
     return y;
 }
 
-const GLfloat& Point::getZ() const {
+GLfloat Point::getZ() const {
     return z;
 }
 

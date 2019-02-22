@@ -11,8 +11,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Point.h"
-#include "Triangle.h"
-
 using namespace std;
 
 class Model{
@@ -41,9 +39,9 @@ public:
         return cursor_pos;
     }
     
-    const vector<Point>& get_vertices() const ;
+    vector<GLfloat> get_vertices() const ;
 
-    const vector<Triangle>& get_Triangles() const;
+    vector<unsigned int> get_indices() const;
 
     glm::mat4 get_model() const;
 
@@ -55,6 +53,10 @@ public:
 
     void set_model(const glm::mat4& md);
 
+    void set_mini(const Point& point);
+
+    void set_maxi(const Point& point);
+
     bool is_inside(Point trans_coord);
 
     friend ifstream & operator >> (ifstream &fin, Model &model);
@@ -64,11 +66,12 @@ private:
     vector<string> comments;
     int no_vertices,no_faces;
     bool header;
-    vector<Point> vertices;
-    vector<Triangle> Triangles;
+    vector<GLfloat> vertices;
+    vector<unsigned int> indices;
     GLfloat scale,spin;
     pair<GLfloat,GLfloat> cursor_pos;  //last position of the cursor on this model.
     glm::mat4 model;
+    Point mini,maxi;
 };
 
 #endif

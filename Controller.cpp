@@ -38,12 +38,11 @@ void Controller::process_input(GLFWwindow* window){
     glfwGetCursorPos(window,&x,&y);
     int active_model = find(x,y);
     bool left_press = false;
-
-    if(active_model == NOT_ANY_MODEL) return;
-
     if(glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS){
         glfwSetWindowShouldClose(window,true);
     }
+
+    if(active_model == NOT_ANY_MODEL) return;
 
     if(glfwGetKey(window,GLFW_KEY_KP_ADD) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_KP_ADD) == GLFW_REPEAT){
         Model* model = model_vector[active_model];
@@ -56,7 +55,13 @@ void Controller::process_input(GLFWwindow* window){
     }
 
     if(glfwGetKey(window,GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_KP_SUBTRACT) == GLFW_REPEAT){
-    	model_vector[active_model]->set_scale(model_vector[active_model]->get_scale() - 0.05);
+    	Model* model = model_vector[active_model];
+        model->set_scale(model_vector[active_model]->get_scale() - 0.05);
+        model->set_model(glm::mat4(1.0f));
+        model->set_model(glm::scale(model->get_model(),
+                glm::vec3(model->get_scale(), model->get_scale(), model->get_scale()))); 
+        model_vector[active_model]->set_model(glm::translate(model->get_model(),
+                glm::vec3(model->get_cursor_pos().first,model->get_cursor_pos().second,0.0f)));
     }
 
     if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){

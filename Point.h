@@ -12,11 +12,11 @@ public:
 
     ~Point();
 
-    const GLfloat& getX() const;
+    GLfloat getX() const;
 
-    const GLfloat& getY() const;
+    GLfloat getY() const;
 
-    const GLfloat& getZ() const;
+    GLfloat getZ() const;
 
     void setX(float _x);
 

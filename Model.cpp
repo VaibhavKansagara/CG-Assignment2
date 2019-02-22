@@ -43,12 +43,12 @@ GLfloat Model::get_scale() const{
     return scale;
 }
 
-const vector<Point>& Model::get_vertices() const {
+vector<GLfloat> Model::get_vertices() const {
     return vertices;
 }
 
-const vector<Triangle>& Model::get_Triangles() const{
-    return Triangles;
+vector<unsigned int> Model::get_indices() const{
+    return indices;
 }
 
 glm::mat4 Model::get_model() const {
@@ -71,14 +71,29 @@ void Model::set_model(const glm::mat4& md){
     model = md;
 }
 
+bool is_between(float mini,float maxi,float value){
+    return (value>=mini && value<=maxi);
+}
+
 bool Model::is_inside(Point trans_coord){
-    int len = Triangles.size();
-    for(int i=0;i<len;i++){
-        if(Triangles[i].is_inside(trans_coord,vertices)){
-            return true;
-        }
+    glm::vec4 new_mini = model * glm::vec4(mini.getX(),mini.getY(),mini.getZ(),0.0f);
+    glm::vec4 new_maxi = model * glm::vec4(maxi.getX(),maxi.getY(),maxi.getZ(),0.0f);
+    if(is_between(new_mini.x,new_maxi.x,trans_coord.getX()) &&
+      is_between(new_mini.y,new_maxi.y,trans_coord.getY()) && 
+      is_between(new_mini.z,new_maxi.z,trans_coord.getZ())){
+        return true;
     }
-    return false;
+    else{
+        return false;
+    }
+}
+
+void Model::set_mini(const Point& point){
+    mini = point;
+}
+
+void Model::set_maxi(const Point& point){
+    maxi = point;
 }
 
 std::ifstream& safeGetline(std::ifstream& is, std::string& t)
@@ -120,6 +135,8 @@ std::ifstream& safeGetline(std::ifstream& is, std::string& t)
 ifstream & operator >> (ifstream &fin, Model &model){
     string temp;
     fin >> temp >> model.file_format >> model.data_format;
+    float minx=1e5,miny=1e5,minz=1e5;
+    float maxx=-1e5,maxy=-1e5,maxz=-1e5;
     while(1){
         fin >> temp;
         if(temp != "comment") break;
@@ -143,29 +160,39 @@ ifstream & operator >> (ifstream &fin, Model &model){
     }
     float maxi=0;
     for(int i = 0; i < model.no_vertices; i++){
-        float temp1=0.0;
+        float temp1;
         float arr[3];
         for(int j = 0; j < 3; j++){
-            fin >> arr[j];
-            maxi=max(maxi,arr[j]);
+            fin >> temp1;
+            maxi=max(maxi,temp1);
+            model.vertices.push_back(temp1);
+            if(j==0){
+                minx = min(minx,temp1);
+                maxx = max(maxx,temp1);
+            }
+            else if(j==1){
+                miny = min(miny,temp1);
+                maxy = max(maxy,temp1);
+            }
+            else{
+                minz = min(minz,temp1);
+                maxz = max(maxz,temp1);
+            }
         }
-        Point point(arr[0],arr[1],arr[2]);
-        model.vertices.push_back(point);
     }
     for(int i=0;i<model.vertices.size();i++){
-        model.vertices[i].normalize(maxi);
+        model.vertices[i]/=maxi;
     }
     for(int i = 0; i < model.no_faces; i++){
         unsigned int tmp;
         fin >> tmp;
-        vector<unsigned int> indices;
         unsigned int tmp1;
         for(int j = 0; j < tmp; j++){
             fin >> tmp1;
-            indices.push_back(tmp1);
+            model.indices.push_back(tmp1);
         }
-        Triangle temp(indices);
-        model.Triangles.push_back(temp);
     }
+    model.set_mini(Point(minx,miny,minz));
+    model.set_maxi(Point(maxx,maxy,maxz));
     return fin;
 }
