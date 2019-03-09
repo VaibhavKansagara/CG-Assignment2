@@ -44,6 +44,8 @@ public:
     
     vector<GLfloat> get_vertices() const ;
 
+    vector<Color> get_vertices_color() const;
+
     vector<unsigned int> get_indices() const;
 
     glm::mat4 get_model() const;

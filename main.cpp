@@ -63,6 +63,15 @@ int main(){
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3*sizeof(GLfloat),(void*)0);
     glEnableVertexAttribArray(0);
 
+
+    unsigned int ColorBuffer;
+    glGenBuffers(1,&ColorBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER,ColorBuffer);
+    glBufferData(GL_ARRAY_BUFFER,sizeof(GLfloat)*cube.get_vertices().size(),&cube.get_vertices_color()[0],GL_STATIC_DRAW);
+     
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,3*sizeof(GLfloat),(void*)0);
+    glEnableVertexAttribArray(1);
+
     glEnable(GL_DEPTH_TEST);
     ourshader.use();
 

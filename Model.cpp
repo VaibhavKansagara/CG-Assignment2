@@ -47,6 +47,10 @@ vector<GLfloat> Model::get_vertices() const {
     return vertices;
 }
 
+vector<Color> Model::get_vertices_color() const{
+    return vertices_color;
+}
+
 vector<unsigned int> Model::get_indices() const{
     return indices;
 }

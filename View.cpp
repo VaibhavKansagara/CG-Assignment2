@@ -39,6 +39,6 @@ void View::display(const Model& model,const Shader& ourshader,const unsigned int
     glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(get_projection()));
 
     glBindVertexArray(VAO);
-    glDrawElements(GL_LINES, model.get_indices().size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, model.get_indices().size(), GL_UNSIGNED_INT, 0);
     // glDrawElements(GL_LINES, 18, GL_UNSIGNED_INT, 0);
 }
