@@ -37,6 +37,7 @@ void Controller::process_input(GLFWwindow* window){
     double x,y;
     glfwGetCursorPos(window,&x,&y);
     int active_model = find(x,y);
+    cout << "active-model:" << active_model <<endl;
     bool left_press = false;
     if(glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS){
         glfwSetWindowShouldClose(window,true);
