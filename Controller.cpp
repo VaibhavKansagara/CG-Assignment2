@@ -14,12 +14,17 @@ void Controller::add(Model* model,View* view){
 
 //because we have same view and projection matrix for all models. 
 Point Controller::get_trans_coord(double x,double y){
-    glm::mat4 view = view_vector[0]->get_view();
-    glm::mat4 proj = view_vector[0]->get_projection();
-    glm::mat4 pv_inverse = glm::matrixCompMult(glm::inverse(view),glm::inverse(proj));
-    glm::vec4 v(x,y,0,1);
-    glm::vec4 ans = pv_inverse * v;
-    return Point(ans.x,ans.y,ans.z); 
+    float winX,winY,winZ;
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    winX = (float)x;
+    winY = (float)viewport[3] - (float)y;
+    glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+	winX = (winX / 400) - 1;
+	winY = (winY / 400) - 1 + 0.225;
+	winZ = winZ * 2  - 1;
+	return Point(winX,winY,winZ);
+
 }
 
 int Controller::find(double x,double y){
