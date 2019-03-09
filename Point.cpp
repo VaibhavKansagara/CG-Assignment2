@@ -64,5 +64,9 @@ std::ostream & operator << (std::ostream &out, const Point &p){
 }
 
 Point operator + (Point const& obj1,Point const& obj2){
-    return Point(obj1.getX() + obj2.getX(),obj1.getY() + obj2.getY());
+    return Point(obj1.getX() + obj2.getX(),obj1.getY() + obj2.getY(),obj1.getZ() + obj2.getZ());
+}
+
+Point operator - (Point const& obj1,Point const& obj2){
+    return Point(obj1.getX() - obj2.getX(),obj1.getY() - obj2.getY(),obj1.getZ() - obj2.getZ());
 }

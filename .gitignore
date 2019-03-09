@@ -1,0 +1,8 @@
+main.o
+main
+View.o
+Point.o
+Parser.o
+Model.o
+Color.o
+Controller.o

@@ -51,8 +51,16 @@ vector<unsigned int> Model::get_indices() const{
     return indices;
 }
 
+Color Model::get_vertex_color(int idx) const{
+    return vertices_color[idx];
+}
+
 glm::mat4 Model::get_model() const {
     return model;
+}
+
+void Model::set_vertex_color(int idx,const Color& color){
+    vertices_color[idx] = color;
 }
 
 void Model::set_scale(GLfloat sc){
@@ -94,6 +102,44 @@ void Model::set_mini(const Point& point){
 
 void Model::set_maxi(const Point& point){
     maxi = point;
+}
+
+void Model::compute_adj_list(){
+    int no_trg = indices.size()/3;
+    adj_list.resize(vertices.size()/3);
+    for(int i = 0; i < no_trg; i++){
+        adj_list[indices[i*3]].push_back(i);
+        adj_list[indices[i*3+1]].push_back(i);
+        adj_list[indices[i*3+2]].push_back(i);
+    }
+}
+
+void Model::compute_vertices_color(){
+    int no_trg = indices.size()/3;
+    vector<Point> trg_normal;
+    for(int i = 0; i < no_trg; i++){
+        Point p1 = Point(vertices[indices[i*3+0]],vertices[indices[i*3+0]+1],vertices[indices[i*3+0]+2]);
+        Point p2 = Point(vertices[indices[i*3+1]],vertices[indices[i*3+1]+1],vertices[indices[i*3+1]+2]);
+        Point p3 = Point(vertices[indices[i*3+2]],vertices[indices[i*3+2]+1],vertices[indices[i*3+2]+2]);
+        Point V = p2-p1;
+        Point W = p3-p1;
+        Point normal;
+        normal.setX(V.getY()*W.getZ() - V.getZ()*W.getY());
+        normal.setY(V.getZ()*W.getX() - V.getX()*W.getZ());
+        normal.setZ(V.getX()*W.getY() - V.getY()*W.getX());
+        trg_normal.push_back(normal);
+    }
+    compute_adj_list();
+    for(int i = 0; i < adj_list.size(); i++){
+        Point p(0,0,0);
+        for(auto e:adj_list[i]){
+            p = p + trg_normal[e];
+        }
+        p.normalize(adj_list[i].size());
+        float mag = sqrt( p.getX()*p.getX() + p.getY()*p.getY() + p.getZ()*p.getZ() );
+        p.normalize(mag);
+        vertices_color.push_back(Color(abs(p.getX()),abs(p.getY()),abs(p.getZ())));
+    }   
 }
 
 std::ifstream& safeGetline(std::ifstream& is, std::string& t)
@@ -194,5 +240,8 @@ ifstream & operator >> (ifstream &fin, Model &model){
     }
     model.set_mini(Point(minx,miny,minz));
     model.set_maxi(Point(maxx,maxy,maxz));
+
+    //compute color of the vertices.
+    model.compute_vertices_color();
     return fin;
 }

@@ -11,6 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Point.h"
+#include "Color.h"
 using namespace std;
 
 class Model{
@@ -35,6 +36,8 @@ public:
 
     GLfloat get_scale() const;
 
+    Color get_vertex_color(int idx) const; 
+
     pair<GLfloat,GLfloat> get_cursor_pos() const {
         return cursor_pos;
     }
@@ -44,6 +47,8 @@ public:
     vector<unsigned int> get_indices() const;
 
     glm::mat4 get_model() const;
+
+    void set_vertex_color(int idx,const Color& color);
 
     void set_scale(GLfloat sc);
 
@@ -59,6 +64,10 @@ public:
 
     bool is_inside(Point trans_coord);
 
+    void compute_adj_list();
+
+    void compute_vertices_color();
+
     friend ifstream & operator >> (ifstream &fin, Model &model);
 private:
     string file_format,data_format;
@@ -67,7 +76,9 @@ private:
     int no_vertices,no_faces;
     bool header;
     vector<GLfloat> vertices;
+    vector< vector<int> > adj_list;
     vector<unsigned int> indices;
+    vector<Color> vertices_color;
     GLfloat scale,spin;
     pair<GLfloat,GLfloat> cursor_pos;  //last position of the cursor on this model.
     glm::mat4 model;

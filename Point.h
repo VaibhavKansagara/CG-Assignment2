@@ -37,6 +37,8 @@ public:
     friend std::ostream & operator << (std::ostream &out, const Point &p);
 
     friend Point operator + (Point const& obj1,Point const& obj2);
+
+    friend Point operator - (Point const& obj1,Point const& obj2);
 private:
     GLfloat x,y,z;
 };
