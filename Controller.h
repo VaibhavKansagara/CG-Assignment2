@@ -2,6 +2,7 @@
 #define Controller_H_
 
 #include "View.h"
+#include "Model.h"
 
 using namespace std;
 

@@ -4,9 +4,11 @@
 using namespace std;
 
 Model::Model(){
+    translate = glm::mat4(1.0f);
+    rotate = glm::mat4(1.0f);
     scale = 1.0;
-    spin = 0.0;
-    model = glm::mat4(1.0f);
+    currpos = glm::vec3(0.0f,0.0f,0.0f);
+
 }
 
 Model::~Model(){}
@@ -35,12 +37,16 @@ int Model::get_no_faces() const{
     return no_faces;
 }
 
-GLfloat Model::get_spin() const{
-    return spin;
+glm::mat4 Model::get_translate() const{
+    return translate;
 }
 
 GLfloat Model::get_scale() const{
     return scale;
+}
+
+glm::mat4 Model::get_rotate() const{
+    return rotate;
 }
 
 vector<GLfloat> Model::get_vertices() const {
@@ -55,32 +61,32 @@ vector<unsigned int> Model::get_indices() const{
     return indices;
 }
 
-Color Model::get_vertex_color(int idx) const{
-    return vertices_color[idx];
+glm::vec3 Model::get_cursor_pos() const {
+    return currpos;
 }
 
-glm::mat4 Model::get_model() const {
-    return model;
+Color Model::get_vertex_color(int idx) const{
+    return vertices_color[idx];
 }
 
 void Model::set_vertex_color(int idx,const Color& color){
     vertices_color[idx] = color;
 }
 
+void Model::set_cursor_pos(glm::vec3 pos){
+    currpos = pos;
+}
+
+void Model::set_translate(const glm::mat4& tr){
+    translate = tr;
+}
+
 void Model::set_scale(GLfloat sc){
     scale = sc;
 }
 
-void Model::set_spin(GLfloat sp){
-    spin = sp;
-}
-
-void Model::set_cursor_pos(pair<GLfloat,GLfloat> P){
-    cursor_pos = P;
-}
-
-void Model::set_model(const glm::mat4& md){
-    model = md;
+void Model::set_rotate(const glm::mat4& rr){
+    rotate = rr;
 }
 
 bool is_between(float mini,float maxi,float value){
@@ -88,6 +94,7 @@ bool is_between(float mini,float maxi,float value){
 }
 
 bool Model::is_inside(Point trans_coord){
+    glm::mat4 model = scale*rotate*translate;
     glm::vec4 new_mini = model * glm::vec4(mini.getX(),mini.getY(),mini.getZ(),0.0f);
     glm::vec4 new_maxi = model * glm::vec4(maxi.getX(),maxi.getY(),maxi.getZ(),0.0f);
     if(is_between(new_mini.x,new_maxi.x,trans_coord.getX()) &&

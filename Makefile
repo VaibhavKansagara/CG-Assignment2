@@ -14,7 +14,7 @@ Parser.o : Parser.h Model.h
 
 View.o : Model.h View.h
 
-Controller.o : Controller.h
+Controller.o : Controller.h View.h
 
 clean :
 	rm *.o main

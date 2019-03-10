@@ -32,15 +32,9 @@ public:
 
     int get_no_faces() const;
 
-    GLfloat get_spin() const;
-
-    GLfloat get_scale() const;
-
     Color get_vertex_color(int idx) const; 
 
-    pair<GLfloat,GLfloat> get_cursor_pos() const {
-        return cursor_pos;
-    }
+    glm::vec3 get_cursor_pos() const;
     
     vector<GLfloat> get_vertices() const ;
 
@@ -48,17 +42,21 @@ public:
 
     vector<unsigned int> get_indices() const;
 
-    glm::mat4 get_model() const;
+    glm::mat4 get_translate() const;
+
+    glm::mat4 get_rotate() const;
+
+    GLfloat get_scale() const;
 
     void set_vertex_color(int idx,const Color& color);
 
+    void set_translate(const glm::mat4& tr);
+
     void set_scale(GLfloat sc);
 
-    void set_spin(GLfloat sp);
+    void set_rotate(const glm::mat4& rr);
 
-    void set_cursor_pos(pair<GLfloat,GLfloat> P);
-
-    void set_model(const glm::mat4& md);
+    void set_cursor_pos(glm::vec3 pos);
 
     void set_mini(const Point& point);
 
@@ -81,9 +79,9 @@ private:
     vector< vector<int> > adj_list;
     vector<unsigned int> indices;
     vector<Color> vertices_color;
-    GLfloat scale,spin;
-    pair<GLfloat,GLfloat> cursor_pos;  //last position of the cursor on this model.
-    glm::mat4 model;
+    glm::vec3 currpos;
+    GLfloat scale;
+    glm::mat4 translate,rotate;
     Point mini,maxi;
 };
 

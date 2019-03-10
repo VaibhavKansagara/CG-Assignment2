@@ -43,7 +43,6 @@ void Controller::process_input(GLFWwindow* window){
     glfwGetCursorPos(window,&x,&y);
     int active_model = find(x,y);
     // cout << "active-model:" << active_model <<endl;
-    bool left_press = false;
     if(glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS){
         glfwSetWindowShouldClose(window,true);
     }
@@ -52,35 +51,32 @@ void Controller::process_input(GLFWwindow* window){
 
     if(glfwGetKey(window,GLFW_KEY_KP_ADD) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_KP_ADD) == GLFW_REPEAT){
         Model* model = model_vector[active_model];
-    	model->set_scale(model_vector[active_model]->get_scale() + 0.05);
-        model->set_model(glm::mat4(1.0f));
-        model->set_model(glm::scale(model->get_model(),
-                glm::vec3(model->get_scale(), model->get_scale(), model->get_scale()))); 
-        model_vector[active_model]->set_model(glm::translate(model->get_model(),
-                glm::vec3(model->get_cursor_pos().first,model->get_cursor_pos().second,0.0f)));
+        model->set_scale(model->get_scale() + 0.05);
+
     }
 
     if(glfwGetKey(window,GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_KP_SUBTRACT) == GLFW_REPEAT){
     	Model* model = model_vector[active_model];
-        model->set_scale(model_vector[active_model]->get_scale() - 0.05);
-        model->set_model(glm::mat4(1.0f));
-        model->set_model(glm::scale(model->get_model(),
-                glm::vec3(model->get_scale(), model->get_scale(), model->get_scale()))); 
-        model_vector[active_model]->set_model(glm::translate(model->get_model(),
-                glm::vec3(model->get_cursor_pos().first,model->get_cursor_pos().second,0.0f)));
+        model->set_scale(model->get_scale() - 0.05);
     }
 
-    if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
-        left_press = true;
-    }
+    if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS || 
+        glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT) == GLFW_REPEAT){
+        float winX, winY,winZ;
+        winX = x;
+        winY = 800 - y;
+        winX = winX / 400 - 1;
+        winY = winY / 400 - 1;
+        glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+        winZ = winZ*2-1;
 
-    if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE){
-        left_press = false;
-    }
-
-    if(left_press == true){
-        double temp = sqrt(screenwidth*screenwidth + screenheight*screenheight);
-        model_vector[active_model]->set_cursor_pos({x/temp,y/temp});
+        Model* model = model_vector[active_model];
+        glm::vec3 oldPos = model->get_cursor_pos();
+        glm::vec3 newPos = glm::vec3(winX,winY,winZ);
+        glm::vec3 diff = newPos - oldPos;
+        glm::mat4 translate = glm::translate(model->get_translate(),glm::vec3(diff.x,diff.y,0.0f));
+        model->set_translate(translate);
+        model->set_cursor_pos(newPos);
     }
 }
 

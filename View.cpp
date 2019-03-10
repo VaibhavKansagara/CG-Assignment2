@@ -29,8 +29,12 @@ void View::display(const Model& model,const Shader& ourshader,const unsigned int
     set_view(glm::mat4(1.0f));
     set_projection(glm::mat4(1.0f));
 
+    glm::mat4 scale = glm::mat4(1.0f);
+    scale = glm::scale(scale,glm::vec3(model.get_scale(),model.get_scale(),model.get_scale()));
+    glm::mat4 model_matrix = model.get_translate()*model.get_rotate()*scale;
+
     int modelLoc = glGetUniformLocation(ourshader.ID, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model.get_model()));
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model_matrix));
 
     int viewLoc = glGetUniformLocation(ourshader.ID, "view");
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(get_view()));
