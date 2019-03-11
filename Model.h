@@ -48,6 +48,8 @@ public:
 
     GLfloat get_scale() const;
 
+    bool is_select() const;
+
     void set_vertex_color(int idx,const Color& color);
 
     void set_translate(const glm::mat4& tr);
@@ -56,7 +58,9 @@ public:
 
     void set_rotate(const glm::mat4& rr);
 
-    void set_cursor_pos(glm::vec3 pos);
+    void set_cursor_pos(const glm::vec3& pos);
+
+    void set_selected(bool val);
 
     void set_mini(const Point& point);
 
@@ -76,13 +80,16 @@ private:
     int no_vertices,no_faces;
     bool header;
     vector<GLfloat> vertices;
-    vector< vector<int> > adj_list;
     vector<unsigned int> indices;
+    vector<GLfloat> vertices_splat;
+    vector<unsigned int> indices_splat;
+    vector< vector<int> > adj_list;
     vector<Color> vertices_color;
     glm::vec3 currpos;
     GLfloat scale;
     glm::mat4 translate,rotate;
     Point mini,maxi;
+    bool is_selected;
 };
 
 #endif

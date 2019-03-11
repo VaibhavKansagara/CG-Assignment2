@@ -18,17 +18,28 @@
 using namespace std;
 
 const GLfloat screenwidth = 800.0;
-const GLfloat screenheight = 600.0;
+const GLfloat screenheight = 800.0;
 
 void framebuffer_size_callback(GLFWwindow* window,int width,int height){
     glViewport(0,0,width,height);
 }
 
 int main(){
+
+    //take user input.
+    string name;
+    int mode;
+    cout << "Enter the name of the model which you want to add:";
+    cin>>name;
+    cout << "Enter the mode of the model which you want:\n";
+    cout << "Options are:1)normal\n2)splat\n";
+    cin >> mode;
+    //user input ends.
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,3);
-    GLFWwindow * window = glfwCreateWindow(800,600,"LearnOpengl",NULL,NULL);
+    GLFWwindow * window = glfwCreateWindow(800,800,"LearnOpengl",NULL,NULL);
     if(window == NULL){
         std::cout<<"Error creating window";
         glfwTerminate();
@@ -46,7 +57,7 @@ int main(){
     glGenBuffers(1,&EBO);
 
     //Create Parser and Model.
-    Parser parser("cow.ply");
+    Parser parser(name);
     Model cube = parser.parse_file();
 
     //binds object to context.

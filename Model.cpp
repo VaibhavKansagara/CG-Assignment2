@@ -7,8 +7,7 @@ Model::Model(){
     translate = glm::mat4(1.0f);
     rotate = glm::mat4(1.0f);
     scale = 1.0;
-    currpos = glm::vec3(0.0f,0.0f,0.0f);
-
+    is_selected = false;
 }
 
 Model::~Model(){}
@@ -65,6 +64,10 @@ glm::vec3 Model::get_cursor_pos() const {
     return currpos;
 }
 
+bool Model::is_select() const{
+    return is_selected;
+}
+
 Color Model::get_vertex_color(int idx) const{
     return vertices_color[idx];
 }
@@ -73,7 +76,7 @@ void Model::set_vertex_color(int idx,const Color& color){
     vertices_color[idx] = color;
 }
 
-void Model::set_cursor_pos(glm::vec3 pos){
+void Model::set_cursor_pos(const glm::vec3& pos){
     currpos = pos;
 }
 
@@ -87,6 +90,9 @@ void Model::set_scale(GLfloat sc){
 
 void Model::set_rotate(const glm::mat4& rr){
     rotate = rr;
+}
+void Model::set_selected(bool val) {
+    is_selected = val;
 }
 
 bool is_between(float mini,float maxi,float value){
