@@ -43,6 +43,12 @@ void View::display(const Model& model,const Shader& ourshader,const unsigned int
     glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(get_projection()));
 
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, model.get_indices().size(), GL_UNSIGNED_INT, 0);
+    if(model.get_mode() == 1){
+        glDrawElements(GL_TRIANGLES, model.get_indices().size(), GL_UNSIGNED_INT, 0);
+    }
+    else if(model.get_mode() == 2){
+        // cout << model.get_vertices(2).size() << endl;
+        glDrawArrays(GL_TRIANGLES,0,(model.get_vertices(2).size()/3));
+    }
     // glDrawElements(GL_LINES, 18, GL_UNSIGNED_INT, 0);
 }

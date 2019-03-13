@@ -59,17 +59,23 @@ int main(){
     //Create Parser and Model.
     Parser parser(name);
     Model cube = parser.parse_file();
+    cube.compute_splat_attributes();
+    cube.set_mode(mode);
 
     //binds object to context.
     glBindVertexArray(VAO);     
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
-    glBufferData(GL_ARRAY_BUFFER,sizeof(GLfloat)*cube.get_vertices().size(),&cube.get_vertices()[0],GL_STATIC_DRAW);
+
+    // cout << cube.get_vertices(mode).size() << endl;
+    glBufferData(GL_ARRAY_BUFFER,sizeof(GLfloat)*cube.get_vertices(mode).size(),&cube.get_vertices(mode)[0],GL_STATIC_DRAW);
     // glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*cube.get_indices().size(),
-                                            &cube.get_indices()[0], GL_STATIC_DRAW);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices),indices, GL_STATIC_DRAW);
+    if(mode == 1){
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*cube.get_indices().size(),
+                                                &cube.get_indices()[0], GL_STATIC_DRAW);
+        // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices),indices, GL_STATIC_DRAW);
+    }
 
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3*sizeof(GLfloat),(void*)0);
     glEnableVertexAttribArray(0);
@@ -78,8 +84,28 @@ int main(){
     unsigned int ColorBuffer;
     glGenBuffers(1,&ColorBuffer);
     glBindBuffer(GL_ARRAY_BUFFER,ColorBuffer);
-    glBufferData(GL_ARRAY_BUFFER,sizeof(GLfloat)*cube.get_vertices().size(),&cube.get_vertices_color()[0],GL_STATIC_DRAW);
-     
+
+    try{
+        if(cube.get_vertices(mode).size() != 3*cube.get_vertices_color(mode).size()){
+            // cout << cube.get_vertices(mode).size()<< " "<<3*cube.get_vertices_color(mode).size()<<endl;
+            throw string("Size of vertices and vertices_color is not same");
+        }
+    }
+    catch(const string& s){
+        cout << s << endl;
+    }
+
+    // //Testing
+    // vector<Color> temp = cube.get_vertices_color(mode);
+    // vector<float> temp1;
+    // for(int i=0;i<temp.size();i++){
+        // cout << i << " " << temp[i];
+    // }
+    // // 
+    
+    glBufferData(GL_ARRAY_BUFFER,sizeof(GLfloat)*cube.get_vertices(mode).size(),&cube.get_vertices_color(mode)[0],GL_STATIC_DRAW);
+    // glBufferData(GL_ARRAY_BUFFER,sizeof(GLfloat)*temp1.size(),&temp1[0],GL_STATIC_DRAW);
+    
     glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,3*sizeof(GLfloat),(void*)0);
     glEnableVertexAttribArray(1);
 

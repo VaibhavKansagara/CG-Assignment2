@@ -70,3 +70,7 @@ Point operator + (Point const& obj1,Point const& obj2){
 Point operator - (Point const& obj1,Point const& obj2){
     return Point(obj1.getX() - obj2.getX(),obj1.getY() - obj2.getY(),obj1.getZ() - obj2.getZ());
 }
+
+Point operator * (float sc,Point const&obj){
+    return Point(obj.getX()*sc, obj.getY()*sc, obj.getZ()*sc);
+}

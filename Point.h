@@ -39,6 +39,8 @@ public:
     friend Point operator + (Point const& obj1,Point const& obj2);
 
     friend Point operator - (Point const& obj1,Point const& obj2);
+
+    friend Point operator * (float sc,Point const&obj);
 private:
     GLfloat x,y,z;
 };
