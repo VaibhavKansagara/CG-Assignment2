@@ -1,0 +1,14 @@
+ply
+format ascii 1.0
+comment created by MATLAB ply_write
+element vertex 3
+property float x
+property float y
+property char z
+element face 1
+property list uchar char vertex_indices
+end_header
+0.0 0.0 0.0
+0.809017 0.587785 0
+0.309018 0.951056 0
+3 0 2 1

@@ -1,7 +1,8 @@
 #include "Model.h"
 #include <sstream>
-
+#include <math.h>
 using namespace std;
+#define NO_TRG_CIRCLE 10
 
 Model::Model(){
     translate = glm::mat4(1.0f);
@@ -206,12 +207,13 @@ void Model::compute_splat(){
         for(int j=0;j<vertices_circle.size();j++){
             Point new_transormed = transform(vertices_circle[j],
                             trg_normals[i],trg_incentres[i],trg_inradii[i]);
+            // Point new_transormed = vertices_circle[j];
             vertices_splat.push_back(new_transormed.getX());
             vertices_splat.push_back(new_transormed.getY());
             vertices_splat.push_back(new_transormed.getZ());
 
             //set color of those vertices.
-            Color color(trg_normals[i].getX(), trg_normals[i].getY(), trg_normals[i].getZ());
+            Color color(abs(trg_normals[i].getX()), abs(trg_normals[i].getY()), abs(trg_normals[i].getZ()));
             vertices_color_splat.push_back(color);
         }
     }
@@ -220,9 +222,10 @@ void Model::compute_splat(){
 
 void Model::compute_circle(){
     vector<Point> points;
-    for(int k=0;k<10;k++){
-        Point temp(cos((2*k*PI)/10), sin((2*k*PI)/10), 0.0);
+    for(int k=0;k<NO_TRG_CIRCLE;k++){
+        Point temp(cos((2*k*PI)/NO_TRG_CIRCLE), sin((2*k*PI)/NO_TRG_CIRCLE), 0.0);
         points.push_back(temp);
+        // cout << temp ;
     }
     for(int i=0;i<9;i++){
         vertices_circle.push_back(Point(0.0f,0.0f,0.0f));
@@ -249,7 +252,15 @@ vector<float> Model::compute_inradius(){
     vector<Point> trg_incircles = compute_incentres();
     for(int i = 0; i < no_trg; i++){
         Point p1 = Point(vertices[3*indices[i*3+0]],vertices[3*indices[i*3+0]+1],vertices[3*indices[i*3+0]+2]);
-        trg_inradii.push_back(trg_incircles[i].get_distance(p1));
+        Point p2 = Point(vertices[3*indices[i*3+1]],vertices[3*indices[i*3+1]+1],vertices[3*indices[i*3+1]+2]);
+        Point p3 = Point(vertices[3*indices[i*3+2]],vertices[3*indices[i*3+2]+1],vertices[3*indices[i*3+2]+2]);
+        float side_a = p2.get_distance(p3);
+        float side_b = p3.get_distance(p1);
+        float side_c = p1.get_distance(p2);
+        float s = ( side_a + side_b + side_c )/2;
+        float area = sqrt(s * (s-side_a) * (s-side_b) * (s-side_c));
+        float inradii = area/s;
+        trg_inradii.push_back(inradii);
     }
     return trg_inradii;
 }
@@ -278,8 +289,9 @@ Point Model::transform(const Point& point,const Point& normal,const Point& incen
     axis = glm::normalize(axis);
     float angle = acos(glm::dot(circle_normal,trg_normal));
 
-    glm::vec3 inctr = glm::vec3(incentre.getX(),incentre.getY(),incentre.getZ());
-
+    // cout << incentre.getX() << incentre.getY() << endl;
+    // cout << inradii << endl;
+    glm::vec3 inctr = glm::vec3(incentre.getX(),incentre.getY(),incentre.getZ()); 
     glm::mat4 rotate = glm::mat4(1.0f);
     glm::mat4 translate = glm::mat4(1.0f);
     glm::mat4 scale = glm::mat4(1.0f);
@@ -287,7 +299,9 @@ Point Model::transform(const Point& point,const Point& normal,const Point& incen
     float mag2 = sqrt(trg_normal.x*trg_normal.x + trg_normal.y*trg_normal.y +
                              trg_normal.z*trg_normal.z);
 
-    rotate = glm::rotate(rotate,-angle,axis);
+    // cout << angle <<endl;
+    if(angle != 0)
+        rotate = glm::rotate(rotate,-angle,axis);
     translate = glm::translate(translate,inctr);
     scale = glm::scale(scale,glm::vec3(inradii,inradii,inradii));
 
@@ -383,7 +397,7 @@ ifstream & operator >> (ifstream &fin, Model &model){
             }
         }
     }
-    float maxdim = max(maxx - minx, max(maxy - miny, maxz - minz));
+    float maxdim = max(maxx - minx, max(maxy - miny, maxz - minz));  
     for(int i=0;i<model.vertices.size()/3;i++){
         model.vertices[i*3] = (model.vertices[i*3] - minx )/ maxdim;
         model.vertices[i*3+1] = (model.vertices[i*3+1] - miny )/ maxdim;
