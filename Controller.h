@@ -12,11 +12,11 @@ class Controller{
 public:
     Controller();
     
-    Controller(vector<Model*> mv,vector<View*> vv);
+    Controller(vector<Model*> mv);
 
     ~Controller();
 
-    void add(Model* model,View* view);
+    void add(Model* model);
 
     Point get_trans_coord(double x,double y);
 
@@ -26,7 +26,7 @@ public:
 
 private:
 	vector<Model*> model_vector;
-	vector<View*> view_vector;
+	View* view;
 };
 
 #endif

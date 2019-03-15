@@ -22,10 +22,22 @@ void View::set_projection(const glm::mat4& pr){
     projection = pr;
 }
 
-void View::display(const Model& model,const Shader& ourshader,const unsigned int VAO) {
-    glClearColor(0.2f,0.3f,0.3f,1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void View::display_lightsource(const Model& model,const Shader& ourshader){
+    glm::mat4 model_light = glm::mat4(1.0f);
+    model_light = glm::scale(model_light,glm::vec3(0.01,0.01,0.01));
+    model_light = glm::translate(model_light, lightPos);
+    ourshader.setMat4("model",model_light);
+    int modelLoc = glGetUniformLocation(ourshader.ID, "model");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model_light));
+    glBindVertexArray(model.get_VAO());
+    glDrawElements(GL_TRIANGLES, model.get_indices().size(), GL_UNSIGNED_INT, 0);
+}
 
+void View::display(const Model& model,const Shader& ourshader) {
+    if(model.get_light_source()){
+        display_lightsource(model,ourshader);
+        return;
+    }
     set_view(glm::mat4(1.0f));
     set_projection(glm::mat4(1.0f));
 
@@ -42,11 +54,12 @@ void View::display(const Model& model,const Shader& ourshader,const unsigned int
     int projectLoc = glGetUniformLocation(ourshader.ID, "projection");
     glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(get_projection()));
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(model.get_VAO());
     if(model.get_mode() == 1){
         glDrawElements(GL_TRIANGLES, model.get_indices().size(), GL_UNSIGNED_INT, 0);
     }
     else if(model.get_mode() == 2){
         glDrawArrays(GL_TRIANGLES,0,(model.get_vertices(2).size()/3));
     }
+    glBindVertexArray(0);
 }

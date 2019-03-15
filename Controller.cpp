@@ -5,11 +5,10 @@ using namespace std;
 
 Controller::Controller(){}
 
-Controller::Controller(vector<Model*> mv,vector<View*> vv):model_vector(mv),view_vector(vv){}
+Controller::Controller(vector<Model*> mv):model_vector(mv){}
 
-void Controller::add(Model* model,View* view){
+void Controller::add(Model* model){
     model_vector.push_back(model);
-    view_vector.push_back(view);
 }
 
 //because we have same view and projection matrix for all models. 

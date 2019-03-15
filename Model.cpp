@@ -9,9 +9,15 @@ Model::Model(){
     rotate = glm::mat4(1.0f);
     scale = 1.0;
     is_selected = false;
+    is_light_source = false;
+    mode = 1;
 }
 
-Model::~Model(){}
+Model::~Model(){
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+}
 
 string Model::get_file_format() const{
     return file_format;
@@ -77,6 +83,14 @@ int Model::get_mode() const {
     return mode;
 }
 
+unsigned int Model::get_VAO() const{
+    return VAO;
+}
+
+bool Model::get_light_source() const {
+    return (is_light_source == true);
+}
+
 bool Model::is_select() const{
     return is_selected;
 }
@@ -97,6 +111,10 @@ void Model::set_translate(const glm::mat4& tr){
     translate = tr;
 }
 
+void Model::set_light_source(bool val){
+    is_light_source = val;
+}
+
 void Model::set_scale(GLfloat sc){
     scale = sc;
 }
@@ -110,6 +128,56 @@ void Model::set_selected(bool val) {
 
 void Model::set_mode(const int& md) {
     mode = md;
+}
+
+void Model::pass_info_lightshader(){
+    glGenVertexArrays(1,&VAO);  //here object is created but memory is not provided.
+    glGenBuffers(1,&VBO);       //same here.
+    glGenBuffers(1,&EBO);
+    //binds object to context.
+    glBindVertexArray(VAO);     
+    glBindBuffer(GL_ARRAY_BUFFER,VBO);
+    glBufferData(GL_ARRAY_BUFFER,sizeof(GLfloat)*get_vertices(1).size(),&get_vertices(1)[0],GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*get_indices().size(),
+                                            &get_indices()[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3*sizeof(GLfloat),(void*)0);
+    glEnableVertexAttribArray(0);
+}
+
+void Model::pass_info_shader(){
+    if(is_light_source){
+        pass_info_lightshader();
+        return;
+    }
+    glGenVertexArrays(1,&VAO);  //here object is created but memory is not provided.
+    glGenBuffers(1,&VBO);       //same here.
+    glGenBuffers(1,&EBO);
+    //binds object to context.
+    glBindVertexArray(VAO);     
+    glBindBuffer(GL_ARRAY_BUFFER,VBO);
+    glBufferData(GL_ARRAY_BUFFER,sizeof(GLfloat)*get_vertices(mode).size(),&get_vertices(mode)[0],GL_STATIC_DRAW);
+    if(mode == 1){
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*get_indices().size(),
+                                                &get_indices()[0], GL_STATIC_DRAW);
+    }
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3*sizeof(GLfloat),(void*)0);
+    glEnableVertexAttribArray(0);
+    unsigned int ColorBuffer;
+    glGenBuffers(1,&ColorBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER,ColorBuffer);
+    try{
+        if(get_vertices(mode).size() != 3*get_vertices_color(mode).size()){
+            throw string("Size of vertices and vertices_color is not same");
+        }
+    }
+    catch(const string& s){
+        cout << s << endl;
+    }
+    glBufferData(GL_ARRAY_BUFFER,sizeof(GLfloat)*get_vertices(mode).size(),&get_vertices_color(mode)[0],GL_STATIC_DRAW);
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,3*sizeof(GLfloat),(void*)0);
+    glEnableVertexAttribArray(1);
 }
 
 bool is_between(float mini,float maxi,float value){

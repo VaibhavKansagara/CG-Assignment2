@@ -2,6 +2,11 @@
 #define Model_H_
 
 #include <bits/stdc++.h>
+
+#ifndef GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES
+#endif
+
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -52,6 +57,10 @@ public:
 
     int get_mode() const;
 
+    bool get_light_source() const;
+
+    unsigned int get_VAO() const;
+
     bool is_select() const;
 
     void set_vertex_color(int idx,const Color& color);
@@ -72,6 +81,8 @@ public:
 
     void set_mode(const int& md);
 
+    void set_light_source(bool val);
+
     bool is_inside(Point trans_coord);
 
     void compute_adj_list();
@@ -89,6 +100,10 @@ public:
     void compute_splat();
 
     void compute_splat_attributes();
+
+    void pass_info_shader();
+
+    void pass_info_lightshader();
 
     Point transform(const Point& point,const Point& normal,const Point& incentre,float inradii);
 
@@ -112,8 +127,9 @@ private:
     GLfloat scale;
     glm::mat4 translate,rotate;
     Point mini,maxi;
-    bool is_selected;
+    bool is_selected,is_light_source;
     int mode;
+    unsigned int VAO,VBO,EBO;
 };
 
 #endif
