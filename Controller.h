@@ -7,6 +7,7 @@
 using namespace std;
 
 extern const GLfloat screenwidth,screenheight;
+extern glm::vec3 lightPos;
 
 class Controller{
 public:

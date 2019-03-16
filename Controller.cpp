@@ -60,6 +60,22 @@ void Controller::process_input(GLFWwindow* window){
         glfwSetWindowShouldClose(window,true);
     }
 
+    if(glfwGetKey(window,GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_UP) == GLFW_REPEAT){
+    	lightPos.y += 0.5;
+    }
+
+    if(glfwGetKey(window,GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_DOWN) == GLFW_REPEAT){
+    	lightPos.y -= 0.5;
+    }
+
+    if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_REPEAT){
+    	lightPos.x -= 0.5;
+    }
+
+    if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_REPEAT){
+    	lightPos.x += 0.5;
+    }
+
     if(active_model == NOT_ANY_MODEL) return;
 
     if(glfwGetKey(window,GLFW_KEY_KP_ADD) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_KP_ADD) == GLFW_REPEAT){

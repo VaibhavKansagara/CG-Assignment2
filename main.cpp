@@ -56,17 +56,6 @@ Model addModel(string name,int mode){
 }
 
 int main(){
-
-    //take user input.
-    string name;
-    int mode;
-    cout << "Enter the name of the model which you want to add:";
-    cin>>name;
-    cout << "Enter the mode of the model which you want:\n";
-    cout << "Options are:1)normal\n2)splat\n";
-    cin >> mode;
-    //user input ends.
-
     GLFWwindow * window = create_window();
 
     //initialise shaders.
@@ -74,7 +63,7 @@ int main(){
     Shader lightingShader("light_shader_vs.txt", "light_shaderfs.txt");
 
     //Create Model and add models.
-    Model cow = addModel(name,mode);
+    Model cow = addModel("cow.ply",1);
     cow.pass_info_shader();
     Model beethoven = addModel("big_spider.ply",1);
     beethoven.pass_info_shader();
