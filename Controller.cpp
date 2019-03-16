@@ -20,17 +20,24 @@ Point Controller::get_trans_coord(double x,double y){
     winY = (float)viewport[3] - (float)y;
     glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 	winX = (winX / 400) - 1;
-	winY = (winY / 400) - 1 + 0.225;
+	winY = (winY / 400) - 1;
 	winZ = winZ * 2  - 1;
 	return Point(winX,winY,winZ);
-
 }
 
 int Controller::find(double x,double y){
     Point trans_coord = get_trans_coord(x,y);
     int len = model_vector.size();
+    // cout << len << endl;
     for(int i=0;i<len;i++){
-        if(model_vector[i]->is_inside(trans_coord) == true){
+        glm::vec3 pos = glm::vec3(trans_coord.getX(),trans_coord.getY(),trans_coord.getZ());
+        pos = glm::inverse(model_vector[i]->get_model()) * glm::vec4(pos,1.0f);
+        // if(model_vector[i]->get_model() == glm::mat4(1.0f)){
+        //     cout << "jvoejojbe";
+        // }
+        Point temp(pos.x,pos.y,pos.z);
+        // cout << temp;
+        if(model_vector[i]->is_inside(temp) == true){
             double tempX = x/400-1;
             double tempY = 800 -y;
             tempY = tempY/400-1;

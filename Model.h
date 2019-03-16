@@ -57,6 +57,8 @@ public:
 
     int get_mode() const;
 
+    glm::mat4 get_model() const;
+
     bool get_light_source() const;
 
     unsigned int get_VAO() const;

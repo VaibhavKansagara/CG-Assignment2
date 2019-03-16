@@ -76,7 +76,7 @@ int main(){
     //Create Model and add models.
     Model cow = addModel(name,mode);
     cow.pass_info_shader();
-    Model beethoven = addModel("beethoven.ply",1);
+    Model beethoven = addModel("big_spider.ply",1);
     beethoven.pass_info_shader();
     //
 
@@ -103,7 +103,7 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         ourshader.use();
-        ourshader.setVec3("lightColor", 0.0f, 0.0f, 1.0f);
+        ourshader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
         ourshader.setVec3("lightPos", lightPos);
 
         //display all the models.

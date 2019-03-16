@@ -83,6 +83,12 @@ int Model::get_mode() const {
     return mode;
 }
 
+glm::mat4 Model::get_model() const{
+    glm::mat4 scale_matrix = glm::mat4(1.0f);
+    scale_matrix = glm::scale(scale_matrix,glm::vec3(scale,scale,scale));
+    return translate*rotate*scale_matrix;
+}
+
 unsigned int Model::get_VAO() const{
     return VAO;
 }
@@ -185,12 +191,11 @@ bool is_between(float mini,float maxi,float value){
 }
 
 bool Model::is_inside(Point trans_coord){
-    glm::mat4 model = scale*rotate*translate;
-    glm::vec4 new_mini = model * glm::vec4(mini.getX(),mini.getY(),mini.getZ(),0.0f);
-    glm::vec4 new_maxi = model * glm::vec4(maxi.getX(),maxi.getY(),maxi.getZ(),0.0f);
-    if(is_between(new_mini.x,new_maxi.x,trans_coord.getX()) &&
-      is_between(new_mini.y,new_maxi.y,trans_coord.getY()) && 
-      is_between(new_mini.z,new_maxi.z,trans_coord.getZ())){
+    // cout << "mini:" << mini << endl;
+    // cout << "maxi:" << maxi << endl;
+    if(is_between(mini.getX(),maxi.getX(),trans_coord.getX()) &&
+      is_between(mini.getY(),maxi.getY(),trans_coord.getY()) && 
+      is_between(mini.getZ(),maxi.getZ(),trans_coord.getZ())){
         return true;
     }
     else{
@@ -482,8 +487,20 @@ ifstream & operator >> (ifstream &fin, Model &model){
             model.indices.push_back(tmp1);
         }
     }
-    model.set_mini(Point(minx,miny,minz));
-    model.set_maxi(Point(maxx,maxy,maxz));
+
+    float minX = 2.0,minY=2.0,minZ=2.0;
+    float maxX=-2.0,maxY=-2.0,maxZ=-2.0;
+    for(int i=0;i<model.vertices.size()/3;i++){
+        minX = min(minX,model.vertices[i*3]);
+        maxX = max(maxX,model.vertices[i*3]);
+        minY = min(minY,model.vertices[i*3+1]);
+        maxY = max(maxY,model.vertices[i*3+1]);
+        minZ = min(minZ,model.vertices[i*3+2]);
+        maxZ = max(maxZ,model.vertices[i*3+2]);
+    }
+
+    model.set_mini(Point(minX,minY,minZ));
+    model.set_maxi(Point(maxX,maxY,maxZ));
 
     //compute color of the vertices.
     model.compute_vertices_color();
