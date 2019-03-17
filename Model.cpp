@@ -10,6 +10,7 @@ Model::Model(){
     scale = 1.0;
     is_selected = false;
     is_light_source = false;
+    is_select_rotate = false;
     mode = 1;
 }
 
@@ -101,6 +102,10 @@ bool Model::is_select() const{
     return is_selected;
 }
 
+bool Model::get_is_select_rotate() const{
+    return (is_select_rotate == true);
+}
+
 Color Model::get_vertex_color(int idx) const{
     return vertices_color[idx];
 }
@@ -130,6 +135,10 @@ void Model::set_rotate(const glm::mat4& rr){
 }
 void Model::set_selected(bool val) {
     is_selected = val;
+}
+
+void Model::set_select_rotate(bool val){
+    is_select_rotate = val;
 }
 
 void Model::set_mode(const int& md) {
@@ -362,17 +371,11 @@ Point Model::transform(const Point& point,const Point& normal,const Point& incen
     axis = glm::normalize(axis);
     float angle = acos(glm::dot(circle_normal,trg_normal));
 
-    // cout << incentre.getX() << incentre.getY() << endl;
-    // cout << inradii << endl;
     glm::vec3 inctr = glm::vec3(incentre.getX(),incentre.getY(),incentre.getZ()); 
     glm::mat4 rotate = glm::mat4(1.0f);
     glm::mat4 translate = glm::mat4(1.0f);
     glm::mat4 scale = glm::mat4(1.0f);
 
-    float mag2 = sqrt(trg_normal.x*trg_normal.x + trg_normal.y*trg_normal.y +
-                             trg_normal.z*trg_normal.z);
-
-    // cout << angle <<endl;
     if(angle != 0)
         rotate = glm::rotate(rotate,-angle,axis);
     translate = glm::translate(translate,inctr);

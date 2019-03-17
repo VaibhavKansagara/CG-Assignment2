@@ -65,6 +65,8 @@ public:
 
     bool is_select() const;
 
+    bool get_is_select_rotate() const;
+
     void set_vertex_color(int idx,const Color& color);
 
     void set_translate(const glm::mat4& tr);
@@ -84,6 +86,8 @@ public:
     void set_mode(const int& md);
 
     void set_light_source(bool val);
+
+    void set_select_rotate(bool val);
 
     bool is_inside(Point trans_coord);
 
@@ -129,7 +133,7 @@ private:
     GLfloat scale;
     glm::mat4 translate,rotate;
     Point mini,maxi;
-    bool is_selected,is_light_source;
+    bool is_selected,is_light_source,is_select_rotate;
     int mode;
     unsigned int VAO,VBO,EBO;
 };
