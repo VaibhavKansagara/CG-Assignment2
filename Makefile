@@ -1,20 +1,34 @@
-main : main.o Point.o Color.o Model.o Parser.o Controller.o View.o
-	g++ -o main main.o Point.o Color.o Model.o Parser.o Controller.o View.o -lglfw -lGLEW -lGLU -lGL
-	./main
+CXX = g++ -std=c++11
+obj = main.o Point.o Color.o Model.o Parser.o Controller.o Shader.o View.o 
+LDFLAGS = -w -lGL -lGLU -lglfw -lGLEW
 
-main.o : main.cpp Model.h View.h Parser.h Point.h Color.o
+main : $(obj)
+	$(CXX) $(obj) $(LDFLAGS) -o bin/main
+	./bin/main
 
-Point.o : Point.h
+main.o : src/main.cpp include/Model.h include/View.h include/Controller.h include/Parser.h
+		$(CXX) -c src/main.cpp
 
-Color.o : Color.h
+Point.o : include/Point.h
+		$(CXX) -c src/Point.cpp
 
-Model.o : Model.h Point.h
+Color.o : include/Color.h
+		$(CXX) -c src/Color.cpp
 
-Parser.o : Parser.h Model.h
+Model.o : include/Model.h include/Point.h
+		$(CXX) -c src/Model.cpp
 
-View.o : Model.h View.h
+Parser.o : include/Parser.h include/Model.h
+		$(CXX) -c src/Parser.cpp
 
-Controller.o : Controller.h View.h
+View.o : include/Model.h include/Shader.h include/View.h
+		$(CXX) -c src/View.cpp
+
+Controller.o : include/Controller.h include/View.h
+		$(CXX) -c src/Controller.cpp 
+
+Shader.o : include/Shader.h
+		$(CXX) -c src/Shader.cpp
 
 clean :
-	rm *.o main
+	rm *.o bin/main

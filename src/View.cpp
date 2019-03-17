@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 
-#include "View.h"
+#include "../include/View.h"
 
 View::View(){}
 

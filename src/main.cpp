@@ -13,11 +13,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Parser.h"
-#include "Shader.h"
-#include "Model.h"
-#include "View.h"
-#include "Controller.h"
+#include "../include/Parser.h"
+#include "../include/Shader.h"
+#include "../include/Model.h"
+#include "../include/View.h"
+#include "../include/Controller.h"
 
 using namespace std;
 
@@ -59,20 +59,20 @@ int main(){
     GLFWwindow * window = create_window();
 
     //initialise shaders.
-    Shader ourshader("vs.txt","fs.txt");
-    Shader lightingShader("light_shader_vs.txt", "light_shaderfs.txt");
+    Shader ourshader("shaders/vs.txt","shaders/fs.txt");
+    Shader lightingShader("shaders/light_shader_vs.txt", "shaders/light_shaderfs.txt");
 
     //Create Model and add models.
-    Model cow = addModel("cow.ply",1);
+    Model cow = addModel("data/cow.ply",2);
     cow.pass_info_shader();
-    Model beethoven = addModel("big_spider.ply",1);
+    Model beethoven = addModel("data/big_spider.ply",1);
     beethoven.pass_info_shader();
     //
 
     glEnable(GL_DEPTH_TEST);
 
     //light part starts
-    Model sphere = addModel("sphere.ply",1);
+    Model sphere = addModel("data/sphere.ply",1);
     sphere.set_light_source(true);
     sphere.pass_info_shader();
     //light part ends.

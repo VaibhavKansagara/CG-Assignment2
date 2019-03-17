@@ -1,4 +1,4 @@
-#include "Model.h"
+#include "../include/Model.h"
 #include <sstream>
 #include <math.h>
 using namespace std;
